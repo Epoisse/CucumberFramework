@@ -15,52 +15,43 @@ public class ExcelReader {
     static Workbook book;
     static Sheet sheet;
 
-    //to open
-    public static void openExcel(String filePath) {
+    public static void openFile(String filePath) {
         try {
             FileInputStream fis = new FileInputStream(filePath);
             book = new XSSFWorkbook(fis);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //open the sheet in excel file
     public static void getSheet(String sheetName) {
         sheet = book.getSheet(sheetName);
     }
 
-    //it will return total no. of rows available in the worksheet
-    public static int getRowCount() {
-        return sheet.getPhysicalNumberOfRows();
+    public static int getRowNumber() {
+        return sheet.getLastRowNum();
     }
 
-    //it will return the total no. of columns it every row
-    public static int getColsCount(int rowIndex) {
-        return sheet.getRow(rowIndex).getPhysicalNumberOfCells();
+    public static int getColNumber(int rowIndex) {
+        return sheet.getRow(rowIndex).getLastCellNum();
     }
 
-    //it will return the data from cell in string format
-    public static String getCellData(int rowIndex, int collIndex) {
-        return sheet.getRow(rowIndex).getCell(collIndex).toString();
+    public static String getCellData(int rowIndex, int colIndex) {
+        return sheet.getRow(rowIndex).getCell(colIndex).toString();
     }
 
     public static List<Map<String, String>> excelIntoMap(String filePath, String sheetName) {
-        openExcel(filePath);
+        openFile(filePath);
         getSheet(sheetName);
-        List<Map<String, String>> listData = new ArrayList<>();
 
-        for (int row = 1; row < getRowCount(); row++) {
-            //creating a map for every row
-            Map<String, String> map = new LinkedHashMap<>();
-            for (int col = 0; col < getColsCount(row); col++) {
+        List<Map<String, String>> listData = new ArrayList<>();
+        for (int row = 1; row < getRowNumber(); row++) {
+            Map<String, String> map = new HashMap<>();
+            for (int col = 0; col < getColNumber(row); col++) {
                 map.put(getCellData(0, col), getCellData(row, col));
             }
             listData.add(map);
         }
         return listData;
     }
-
 }

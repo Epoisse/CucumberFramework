@@ -21,7 +21,10 @@ import org.junit.runner.RunWith;
         monochrome = true,
 
         //we can use OR and AND to execute scenarios from 2 or more different tags together
-        tags = "@regression"
+        tags = "@regression",
+
+        plugin = {"html:target/cucumber.html", "pretty", "json:target/cucumber.json",
+        "rerun:target/failed.txt"}
 )
 
 

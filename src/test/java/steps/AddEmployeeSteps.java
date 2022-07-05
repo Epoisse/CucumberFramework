@@ -1,6 +1,7 @@
 package steps;
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
@@ -8,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import utils.CommonMethods;
 import utils.Constants;
+import utils.DBUtils;
 import utils.ExcelReader;
 
 import java.util.Iterator;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 public class AddEmployeeSteps extends CommonMethods {
+
+    String empId, firstName, dbFirstName, dbEmpId;
 
     @When("user clicks on PIM option")
     public void user_clicks_on_pim_option() {
@@ -87,10 +91,6 @@ public class AddEmployeeSteps extends CommonMethods {
         //it checks whether the next element exist or not
         while (iterator.hasNext()) {
             Map<String, String> mapNewEmp = iterator.next();
-            System.out.println(mapNewEmp.get("FirstName"));
-            System.out.println(mapNewEmp.get("MiddleName"));
-            System.out.println(mapNewEmp.get("LastName"));
-            System.out.println(mapNewEmp.get("Username"));
 
             sendText(addEmployeePage.firstNameField, mapNewEmp.get("FirstName"));
             sendText(addEmployeePage.middleNameField, mapNewEmp.get("MiddleName"));
@@ -98,13 +98,12 @@ public class AddEmployeeSteps extends CommonMethods {
 
             //it will fetch the employee id from attribute
             String empIdValue = addEmployeePage.empIdLocator.getAttribute("value");
-            System.out.println(empIdValue);
 
             //to upload the photo
-            sendText(addEmployeePage.photograph, mapNewEmp.get("Photograph"));
+         /*   sendText(addEmployeePage.photograph, mapNewEmp.get("Photograph"));
             if (!addEmployeePage.checkbox.isSelected()) {
                 click(addEmployeePage.checkbox);
-            }
+            }*/
 
             sendText(addEmployeePage.createUsername, mapNewEmp.get("Username"));
             sendText(addEmployeePage.createPassword, mapNewEmp.get("Password"));
@@ -130,5 +129,26 @@ public class AddEmployeeSteps extends CommonMethods {
             click(employeeSearchPage.addEmployeeOption);
         }
 
+    }
+
+    @And("user grabs the employee id")
+    public void userGrabsTheEmployeeId() {
+        empId = addEmployeePage.empIdLocator.getAttribute("value");
+        firstName = addEmployeePage.firstNameField.getAttribute("value");
+    }
+
+    @And("user query the database for same employee id")
+    public void userQueryTheDatabaseForSameEmployeeId() {
+        String query = "select * from hs_hr_employees where employee_id='" + empId + "'";
+        dbFirstName = DBUtils.getDataFromDB(query).get(0).get("emp_firstname");
+        dbEmpId = DBUtils.getDataFromDB(query).get(0).get("employee_id");
+    }
+
+    @Then("user verifies the results")
+    public void userVerifiesTheResults() {
+        System.out.println("First name from Front end" + firstName);
+        System.out.println("First name from Front end" + dbFirstName);
+        Assert.assertEquals(firstName, dbFirstName);
+        Assert.assertEquals(empId, dbEmpId);
     }
 }

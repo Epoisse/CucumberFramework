@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.SimpleFormatter;
@@ -45,17 +46,17 @@ public class CommonMethods extends PageInitializers {
         element.sendKeys(textToSend);
     }
 
-    public static WebDriverWait getWait() {
+/*    public static WebDriverWait getWait() {
         WebDriverWait wait = new WebDriverWait(driver, Constants.EXPLICIT_WAIT);
         return wait;
-    }
+    }*/
 
-    public static void waitForClickability(WebElement element) {
+/*    public static void waitForClickability(WebElement element) {
         getWait().until(ExpectedConditions.elementToBeClickable(element));
-    }
+    }*/
 
     public static void click(WebElement element) {
-        waitForClickability(element);
+        /*waitForClickability(element);*/
         element.click();
     }
 
@@ -87,6 +88,10 @@ public class CommonMethods extends PageInitializers {
         //to format the date according to our choice we want to implement in this function
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
+    }
+
+    public static Duration intIntoDuration(int sec) {
+        return Duration.ofSeconds(sec);
     }
 
 
