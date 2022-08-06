@@ -24,23 +24,28 @@ public class CommonMethods extends PageInitializers {
     public static void openBrowserAndLaunchApplication() {
         ConfigReader.readProperties(Constants.CONFIGURATION_FILEPATH);
         switch (ConfigReader.getPropertyValue("browser")) {
+
             case "chrome":
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                driver = new FirefoxDriver();
+                break;
+
+            case "headless":
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("disable-gpu");
                 driver = new ChromeDriver(chromeOptions);
-              /*  WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
-                break;*/
-
-          /*  case "firefox":
-                WebDriverManager.firefoxdriver().setup();
-                driver = new FirefoxDriver();
                 break;
+
             default:
-                throw new RuntimeException("Invalid browser name");*/
+                throw new RuntimeException("Invalid browser name");
         }
         driver.get(ConfigReader.getPropertyValue("url"));
         driver.manage().window().maximize();
@@ -53,17 +58,17 @@ public class CommonMethods extends PageInitializers {
         element.sendKeys(textToSend);
     }
 
-/*    public static WebDriverWait getWait() {
+    public static WebDriverWait getWait() {
         WebDriverWait wait = new WebDriverWait(driver, Constants.EXPLICIT_WAIT);
         return wait;
-    }*/
+    }
 
-/*    public static void waitForClickability(WebElement element) {
+    public static void waitForClickability(WebElement element) {
         getWait().until(ExpectedConditions.elementToBeClickable(element));
-    }*/
+    }
 
     public static void click(WebElement element) {
-        /*waitForClickability(element);*/
+        waitForClickability(element);
         element.click();
     }
 
